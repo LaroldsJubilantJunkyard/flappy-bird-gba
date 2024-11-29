@@ -17,6 +17,7 @@
 // From: #include <bn_random.h>
 bn::fixed birdYVelocity =0;
 
+bool birdAlive=true;
 
 bn::optional<bn::camera_ptr> camera;
 bn::optional<bn::sprite_ptr> bird;
@@ -26,11 +27,19 @@ bn::optional<bn::sprite_animate_action<6>> birdFlapAnimation;
 void InitializeBird(){
 
     birdYVelocity =0;
+    birdAlive = true;
 
     camera = bn::camera_ptr::create();
     bird = bn::sprite_items::birdsprites.create_sprite(-172,0);
     bird->set_camera(camera.value());
     birdFlapAnimation = bn::create_sprite_animate_action_once(bird.value(),0,bn::sprite_items::birdsprites.tiles_item(),0,0,1,1,2,2);
+}
+
+void BirdJump(){
+
+        birdYVelocity = -JUMP_SPEED;
+        birdFlapAnimation->reset();
+
 }
 
 
@@ -41,8 +50,7 @@ bn::fixed UpdateBird()
     bird->set_y(bird->y()+birdYVelocity);
 
     if(bn::keypad::a_pressed()){
-        birdYVelocity = -JUMP_SPEED;
-        birdFlapAnimation->reset();
+        BirdJump();
     }
 
     bird->set_x(bird->x()+bn::fixed(MOVE_SPEED));
@@ -50,6 +58,10 @@ bn::fixed UpdateBird()
     camera->set_x(cameraLeft);
 
     if(!birdFlapAnimation->done())birdFlapAnimation->update();
+
+    if(bird->y()>48){
+        birdAlive=false;
+    }
 
 
     return bird->x();

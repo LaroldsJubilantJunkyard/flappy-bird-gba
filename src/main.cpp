@@ -14,6 +14,8 @@
 #include "bn_sprite_items_birdsprites.h"
 #include "bn_sprite_items_greenpipesprite.h"
 #include "bn_sprite_items_largenumberssprites.h"
+#include "bn_sprite_items_gameendsprites.h"
+#include "bn_sprite_items_medalsprites.h"
 
 
 #include "pipesection.h"
@@ -22,6 +24,7 @@
 #include "bird.h"
 
 #define MAX(A,B) (((A)>(B)) ? (A): (B))
+#define MIN(A,B) (((A)<(B)) ? (A): (B))
 #define GRAVITY .3
 #define JUMP_SPEED 3
 #define MOVE_SPEED 2
@@ -38,15 +41,36 @@ int main()
 {
     bn::core::init();
 
-    InitializeScore();
+    bn::fixed birdX;
+
+    maingameplay:
+
     InitializeBackground();
     InitializeBird();
+    InitializePipes();
 
+    while(bird->x()<0 || !bn::keypad::a_pressed()){
 
-    while(true)
-    {
+        
         bn::core::update();
 
+
+        UpdateBird();
+    
+            birdX += MOVE_SPEED;
+        UpdateBackground(birdX);
+
+
+        if(bird->y()>0){
+            BirdJump();
+        }
+    }
+
+    InitializeScore();
+
+    while(birdAlive)
+    {
+        bn::core::update();
 
         spawnCounter+=MOVE_SPEED;
 
@@ -63,12 +87,109 @@ int main()
 
         }
 
+       UpdateBird();
+    
+            birdX += MOVE_SPEED;
+        UpdateBackground(birdX);
+        UpdateAllPipes();
+
+    }
+
+    HideScore();
+
+    {
+        bn::fixed gameEndY = 110;
+        bn::fixed gameEndX = -32;
+
+        bn::sprite_ptr gameEndSprite1 = bn::sprite_items::gameendsprites.create_sprite(gameEndX,gameEndY);
+        bn::sprite_ptr gameEndSprite2 = bn::sprite_items::gameendsprites.create_sprite(gameEndX+64,gameEndY,1);
+        bn::optional<bn::sprite_ptr> medal;
+        
+
+        #define MEDAL_Y_OFFSET 24
+
+        #define MEDAL_X_OFFSET (-20)
+        
+        if(score>10) medal = bn::sprite_items::medalsprites.create_sprite(gameEndX+MEDAL_X_OFFSET,gameEndY+MEDAL_Y_OFFSET,MIN(score/10,3));
+
+        gameEndSprite1.set_bg_priority(3);
+        gameEndSprite2.set_bg_priority(3);
+
+        while(activePipeCount>0 && bird->x()>-150)
+        {
+            bn::core::update();
+
+            
+            birdX += MOVE_SPEED;
+            bird->set_x(bird->x()-MOVE_SPEED);
+        
+            UpdateBackground(birdX);
+            UpdateAllPipes();
 
 
-        bn::fixed birdX = UpdateBird();
+        }
+
+
+        while(gameEndSprite1.y()>0)
+        {
+            bn::core::update();
+
+            
+            birdX += MOVE_SPEED;
+            bird->set_x(bird->x()-=MOVE_SPEED);
+        
+            UpdateBackground(birdX);
+            UpdateAllPipes();
+
+            gameEndSprite1.set_y(gameEndSprite1.y()-5);
+            gameEndSprite2.set_y(gameEndSprite1.y());
+            if(medal.has_value())medal->set_y(gameEndSprite1.y()+MEDAL_Y_OFFSET);
+        }
+        while(!bn::keypad::a_pressed())
+        {
+            bn::core::update();
+
+            
+            birdX += MOVE_SPEED;
+            bird->set_x(bird->x()-=MOVE_SPEED);
+        
+            UpdateBackground(birdX);
+            UpdateAllPipes();
+
+
+        }
+        while(gameEndSprite1.y()<110)
+        {
+            bn::core::update();
+
+            
+            birdX += MOVE_SPEED;
+            bird->set_x(bird->x()-MOVE_SPEED);
+        
+            UpdateBackground(birdX);
+            UpdateAllPipes();
+
+
+            gameEndSprite1.set_y(gameEndSprite1.y()+5);
+            gameEndSprite2.set_y(gameEndSprite1.y());
+            if(medal.has_value())medal->set_y(gameEndSprite1.y()+MEDAL_Y_OFFSET);
+        }
+
+    }
+
+    
+    while(activePipeCount>0)
+    {
+        bn::core::update();
+
+        birdX += MOVE_SPEED;
+        bird->set_x(bird->x()-MOVE_SPEED);
     
         UpdateBackground(birdX);
         UpdateAllPipes();
 
     }
+
+
+    goto maingameplay;
 }

@@ -32,15 +32,19 @@ bn::optional<bn::regular_bg_ptr> bkg1,bkg2,bkg3,ground;
 void InitializeBackground(){
     
 
-    bkg1 = bn::regular_bg_items::background_layer1.create_bg();
-    bkg2 = bn::regular_bg_items::background_layer2.create_bg();
-    bkg3 = bn::regular_bg_items::background_layer3.create_bg();
-    ground = bn::regular_bg_items::groundbackground.create_bg();
-    ground->set_priority(0);
-    ground->set_y(-(256-160)/2);
-    bkg1->set_y(-(256-160)/2);
-    bkg2->set_y(-(256-160)/2);
-    bkg3->set_y(-(256-160)/2);
+    if(!bkg1.has_value()){
+        bkg1 = bn::regular_bg_items::background_layer1.create_bg();
+        bkg2 = bn::regular_bg_items::background_layer2.create_bg();
+        bkg3 = bn::regular_bg_items::background_layer3.create_bg();
+        ground = bn::regular_bg_items::groundbackground.create_bg();
+
+        
+        ground->set_priority(0);
+        ground->set_y(-(256-160)/2);
+        bkg1->set_y(-(256-160)/2);
+        bkg2->set_y(-(256-160)/2);
+        bkg3->set_y(-(256-160)/2);
+    }
 }
 
 void UpdateBackground(bn::fixed birdX){

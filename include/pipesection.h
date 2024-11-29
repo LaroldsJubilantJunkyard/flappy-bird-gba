@@ -18,6 +18,9 @@ class PipeSection{
             bottomPipe->set_z_order(0);
 
             reset();
+            
+            bottomPipe->set_visible(false);
+            topPipe->set_visible(false);
         }
 
         bool active;
@@ -30,5 +33,8 @@ class PipeSection{
         void reset(void);
 };
 
+void InitializePipes();
 void UpdateAllPipes();
 void SpawnPipe();
+
+extern int  activePipeCount;

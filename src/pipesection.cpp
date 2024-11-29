@@ -6,7 +6,31 @@
 #include "global.h"
 #include "bird.h"
 
+int activePipeCount=0;
 bn::vector<PipeSection,MAXIMUM_PIPES> pipes;
+
+void InitializePipes(){
+
+    while(pipes.size()<MAXIMUM_PIPES){
+
+        PipeSection newPipeSection;
+        pipes.push_back(newPipeSection);
+    }
+
+    bn::vector<PipeSection,MAXIMUM_PIPES>::iterator it = pipes.begin();
+
+    while(it<pipes.end()){
+        
+        it->active=false;
+        it->topPipe->set_visible(false);
+        it->bottomPipe->set_visible(false);
+
+        it++;
+    }
+
+
+    activePipeCount=0;
+}
 
 
 void UpdateAllPipes(){
@@ -68,6 +92,9 @@ void PipeSection::update(void){
         this->active=false;
         this->topPipe->set_visible(false);
         this->bottomPipe->set_visible(false);
+
+    activePipeCount--;
+    return;
     }
 
 
@@ -79,24 +106,19 @@ void PipeSection::update(void){
 
 void SpawnPipe(void){
 
-    if(pipes.size()<MAXIMUM_PIPES){
-        PipeSection newPipeSection;
-        pipes.push_back(newPipeSection);
-    }
-    else {
-
-        bn::vector<PipeSection,MAXIMUM_PIPES>::iterator it = pipes.begin();
+    bn::vector<PipeSection,MAXIMUM_PIPES>::iterator it = pipes.begin();
 
 
-        while(it<pipes.end()){
-            
-            if(!it->active){
-                it->reset();
-                return;
-            }
+    while(it<pipes.end()){
+        
+        if(!it->active){
+            it->reset();
 
-            it++;
+            activePipeCount++;
+            return;
         }
 
+        it++;
     }
+
 }

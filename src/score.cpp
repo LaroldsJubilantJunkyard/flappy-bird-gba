@@ -12,6 +12,7 @@ bn::vector<bn::sprite_ptr,3> largeNumbers;
 
 void UpdateScore(void){
 
+    if(largeNumbers.size()!=3)return;
 
     bn::vector<bn::sprite_ptr,3>::iterator it = largeNumbers.begin();
 
@@ -31,13 +32,21 @@ void UpdateScore(void){
     }
 }
 
+void HideScore(void){
+
+    largeNumbers.clear();
+}
+
 void InitializeScore(void){
 
     score=0;
 
-    largeNumbers.push_back(bn::sprite_items::largenumberssprites.create_sprite(0,-58));
-    largeNumbers.push_back(bn::sprite_items::largenumberssprites.create_sprite(16,-58));
-    largeNumbers.push_back(bn::sprite_items::largenumberssprites.create_sprite(32,-58));
+    if(largeNumbers.size()!=3){
+
+        largeNumbers.push_back(bn::sprite_items::largenumberssprites.create_sprite(0,-58));
+        largeNumbers.push_back(bn::sprite_items::largenumberssprites.create_sprite(16,-58));
+        largeNumbers.push_back(bn::sprite_items::largenumberssprites.create_sprite(32,-58));
+    }
 
     UpdateScore();
 
