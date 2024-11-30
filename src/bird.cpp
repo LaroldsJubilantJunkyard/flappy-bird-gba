@@ -23,22 +23,34 @@ bn::optional<bn::camera_ptr> camera;
 bn::optional<bn::sprite_ptr> bird;
 bn::optional<bn::sprite_animate_action<6>> birdFlapAnimation;
 
-
 void InitializeBird(){
-
-    birdYVelocity =0;
-    birdAlive = true;
 
     camera = bn::camera_ptr::create();
     bird = bn::sprite_items::birdsprites.create_sprite(-172,0);
     bird->set_camera(camera.value());
+    bird->set_visible(false);
+
     birdFlapAnimation = bn::create_sprite_animate_action_once(bird.value(),0,bn::sprite_items::birdsprites.tiles_item(),0,0,1,1,2,2);
+}
+
+void ShowBird(void){
+
+    bird->set_visible(true);
+    bird->set_position(-172,0);
+    birdAlive = true;
+    birdYVelocity =0;
+}
+
+
+void HideBird(void){
+
+    bird->set_visible(false);
 }
 
 void BirdJump(){
 
-        birdYVelocity = -JUMP_SPEED;
-        birdFlapAnimation->reset();
+    birdYVelocity = -JUMP_SPEED;
+    birdFlapAnimation->reset();
 
 }
 

@@ -3,7 +3,7 @@
 #include "bn_vector.h"
 #include "pipesection.h"
 #include "score.h"
-#include "global.h"
+#include "common.h"
 #include "bird.h"
 
 int activePipeCount=0;

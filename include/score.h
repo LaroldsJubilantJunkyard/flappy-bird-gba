@@ -1,5 +1,6 @@
 #include "bn_core.h"
 #include "bn_vector.h"
+#include "bn_sprite_ptr.h"
 
 extern int score;
 
