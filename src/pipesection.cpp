@@ -88,7 +88,7 @@ void PipeSection::update(void){
 
     this->x-=MOVE_SPEED;
 
-    if(this->x<-120){
+    if(this->x<-136){
         this->active=false;
         this->topPipe->set_visible(false);
         this->bottomPipe->set_visible(false);
